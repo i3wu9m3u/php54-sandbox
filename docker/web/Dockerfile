@@ -1,8 +1,6 @@
 FROM php:5.4-apache
 
 ARG TZ
-ENV COMPOSER_ALLOW_SUPERUSER 1
-ENV COMPOSER_HOME /composer
 
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}/../!g' /etc/apache2/apache2.conf
@@ -18,5 +16,4 @@ RUN set -eux \
   && docker-php-ext-install \
     pdo_mysql
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
-  && composer config -g repos.packagist composer https://packagist.jp
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
